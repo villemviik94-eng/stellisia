@@ -1,0 +1,7 @@
+<svg xmlns='http://www.w3.org/2000/svg' width='192' height='192' viewBox='0 0 192 192'>
+  <rect width='192' height='192' rx='40' fill='%2307070f'/>
+  <circle cx='96' cy='85' r='28' fill='none' stroke='%23a78bfa' stroke-width='6'/>
+  <path d='M96 57 L96 45 M96 125 L96 113 M124 85 L136 85 M56 85 L68 85' stroke='%23a78bfa' stroke-width='4' stroke-linecap='round'/>
+  <circle cx='96' cy='85' r='10' fill='%237c3aed'/>
+  <text x='96' y='148' font-family='serif' font-size='18' fill='%23e2d9f3' text-anchor='middle' letter-spacing='2'>STELLISIA</text>
+</svg>
