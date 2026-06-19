@@ -95,6 +95,10 @@ input[type='checkbox'] {
   flex-shrink: 0;
 }
 
+/* ── Time drum scroll ────────────────────────────── */
+.drum-scroll::-webkit-scrollbar { display: none; }
+.drum-scroll { -ms-overflow-style: none; scrollbar-width: none; }
+
 /* ── Buttons ──────────────────────────────────────── */
 .btn-primary {
   width: 100%;

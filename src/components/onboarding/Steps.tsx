@@ -2,6 +2,8 @@
 
 import { useState } from 'react'
 import CitySearch from './CitySearch'
+import { DatePicker } from './DatePicker'
+import { TimeDrum } from './TimeDrum'
 import { getWesternSign, getChineseSign } from '@/lib/astrology'
 import type { OnboardingData, CityResult } from '@/types'
 
@@ -72,8 +74,8 @@ function PrimaryBtn({ onClick, children }: { onClick: () => void; children: Reac
 
 // ── STEP 1: Date of birth ─────────────────────────────
 export function StepDOB({ data, onNext }: { data: OnboardingData; onNext: (dob: string) => void }) {
-  const [dob, setDob]   = useState(data.dob)
-  const [err, setErr]   = useState(false)
+  const [dob, setDob] = useState(data.dob)
+  const [err, setErr] = useState(false)
 
   function submit() {
     if (!dob) { setErr(true); return }
@@ -86,16 +88,18 @@ export function StepDOB({ data, onNext }: { data: OnboardingData; onNext: (dob: 
       <CardTitle>When were you born?</CardTitle>
       <CardHint>Your date instantly reveals your Western sun sign and Chinese zodiac animal.</CardHint>
       <FieldLabel>Date of birth</FieldLabel>
-      <InputWrap icon="ti-calendar">
-        <input
-          type="date"
-          value={dob}
-          max={new Date().toISOString().split('T')[0]}
-          onChange={e => { setDob(e.target.value); setErr(false) }}
-          className={err ? 'error' : ''}
-        />
-      </InputWrap>
+      <div style={{
+        background: '#0d0d1a', border: `0.5px solid ${err ? '#7c2d2d' : '#2e2b4a'}`,
+        borderRadius: 12, padding: '12px 10px', marginBottom: '0.75rem', transition: 'border-color 0.2s',
+      }}>
+        <DatePicker value={dob} onChange={v => { setDob(v); setErr(false) }} />
+      </div>
       {err && <ErrMsg>Please select your date of birth</ErrMsg>}
+      {dob && (
+        <div style={{ fontSize: 12, color: '#6b5f8a', marginBottom: '0.5rem', textAlign: 'center' }}>
+          Selected: <span style={{ color: '#9d8cc4' }}>{new Date(dob + 'T12:00').toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}</span>
+        </div>
+      )}
       <PrimaryBtn onClick={submit}>
         <i className="ti ti-sparkles" aria-hidden /> Reveal my signs
       </PrimaryBtn>
@@ -193,14 +197,9 @@ export function StepTOB({ data, onNext }: { data: OnboardingData; onNext: (tob: 
       <CardHint>Used for your Rising sign, Moon sign, and all 12 houses. The more precise, the better.</CardHint>
 
       <FieldLabel optional>Time of birth</FieldLabel>
-      <InputWrap icon="ti-clock">
-        <input
-          type="time"
-          value={unknown ? '12:00' : tob}
-          disabled={unknown}
-          onChange={e => setTob(e.target.value)}
-        />
-      </InputWrap>
+      <div style={{ marginBottom: '1rem', opacity: unknown ? 0.35 : 1, pointerEvents: unknown ? 'none' : 'auto', transition: 'opacity 0.2s' }}>
+        <TimeDrum value={unknown ? '12:00' : (tob || '12:00')} onChange={v => setTob(v)} />
+      </div>
 
       {/* Unknown checkbox */}
       <label style={{
@@ -281,13 +280,13 @@ export function StepName({ data, onNext }: { data: OnboardingData; onNext: (name
     <Card>
       <CardTitle>Last step — what's your name?</CardTitle>
       <CardHint>We'll personalize your {western.name} profile and daily readings around you.</CardHint>
-      <FieldLabel>Full name</FieldLabel>
+      <FieldLabel>Name</FieldLabel>
       <InputWrap icon="ti-user">
         <input
           type="text"
           value={name}
-          placeholder="e.g. Sarah Johnson"
-          autoComplete="name"
+          placeholder="e.g. Sarah"
+          autoComplete="given-name"
           className={err ? 'error' : ''}
           onChange={e => { setName(e.target.value); setErr(false) }}
           onKeyDown={e => e.key === 'Enter' && submit()}
