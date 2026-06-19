@@ -301,14 +301,14 @@ export function StepName({ data, onNext }: { data: OnboardingData; onNext: (name
 }
 
 // ── STEP 7: Summary ───────────────────────────────────
-const FEATURES = [
+const FEATURES: { icon: string; label: string; sub: string; free: boolean; needsTime?: boolean }[] = [
   { icon: 'ti-chart-radar',    label: 'Sensitivity charts',    sub: 'Daily 0–100% readings',       free: true  },
   { icon: 'ti-moon',           label: 'Moon phase analysis',   sub: 'Lunar emotional rhythms',     free: true  },
   { icon: 'ti-layout-grid',    label: '12 astrological houses',sub: '',                             free: true, needsTime: true },
   { icon: 'ti-arrows-up',      label: 'Rising & ascendant',   sub: '',                             free: true, needsTime: true },
   { icon: 'ti-dna-2',          label: 'Biohacking protocols',  sub: 'Sleep & energy timing',       free: true  },
   { icon: 'ti-calendar-stats', label: '90-day forecast',       sub: 'From day 4 · $7.99/mo',       free: false },
-] as const
+]
 
 export function StepSummary({ data, onDashboard }: { data: OnboardingData; onDashboard: () => void }) {
   const western = getWesternSign(data.dob)
@@ -392,6 +392,57 @@ export function StepSummary({ data, onDashboard }: { data: OnboardingData; onDas
         <i className="ti ti-shield-lock" style={{ fontSize: 12, color: '#6b5f8a' }} aria-hidden />
         3 days free · no credit card · 256-bit encrypted
       </div>
+    </Card>
+  )
+}
+
+// ── STEP: Email ───────────────────────────────────────
+export function StepEmail({ data, onNext }: { data: OnboardingData; onNext: (email: string) => void }) {
+  const [email, setEmail] = useState(data.email ?? '')
+  const [err, setErr]     = useState('')
+
+  const inputStyle = {
+    width: '100%', background: '#0d0d1a', border: `0.5px solid ${err ? '#7c2d2d' : '#2e2b4a'}`,
+    borderRadius: 10, color: '#e2d9f3', fontSize: 15, padding: '12px 12px 12px 38px',
+    fontFamily: 'inherit', outline: 'none', boxSizing: 'border-box' as const,
+  }
+
+  function submit() {
+    const trimmed = email.trim()
+    if (!trimmed) { setErr('Email is required'); return }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) { setErr('Please enter a valid email'); return }
+    setErr('')
+    onNext(trimmed)
+  }
+
+  return (
+    <Card>
+      <CardTitle>Save your reading</CardTitle>
+      <CardHint>Enter your email to receive your daily horoscope and keep your profile safe.</CardHint>
+
+      <FieldLabel>Email address</FieldLabel>
+      <InputWrap icon="ti-mail">
+        <input
+          type="email"
+          placeholder="you@example.com"
+          value={email}
+          onChange={e => { setEmail(e.target.value); setErr('') }}
+          onKeyDown={e => e.key === 'Enter' && submit()}
+          style={inputStyle}
+          autoComplete="email"
+          autoFocus
+        />
+      </InputWrap>
+      {err && <ErrMsg>{err}</ErrMsg>}
+
+      <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: '1rem', fontSize: 11, color: '#6b5f8a' }}>
+        <i className="ti ti-shield-lock" style={{ fontSize: 12, color: '#7c3aed' }} aria-hidden />
+        We never share your email. No spam, ever.
+      </div>
+
+      <PrimaryBtn onClick={submit}>
+        <i className="ti ti-arrow-right" aria-hidden /> Continue
+      </PrimaryBtn>
     </Card>
   )
 }
